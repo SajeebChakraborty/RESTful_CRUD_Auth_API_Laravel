@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 //import the Controller
 use App\Http\Controllers\UserApiController;
+use App\Http\Controllers\ProductApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,3 +40,6 @@ Route::patch('/update-user-single-record/{id}', UserApiController::class . '@upd
 Route::delete('/delete-user/{id}', UserApiController::class . '@deleteUser');
 Route::delete('/delete-user-with-json', UserApiController::class . '@deleteUserWithJson');
 Route::delete('/delete-multiple-user/{ids}', UserApiController::class . '@deleteMultipleUser');
+
+//Authentication check
+Route::get('/product-list', ProductApiController::class . '@productList');
