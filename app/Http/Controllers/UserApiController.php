@@ -95,5 +95,67 @@ class UserApiController extends Controller
         ],201);
 
     }
+    public function createMultipleUser(Request $req)
+    {
+
+        $data=$req->all();
+
+        //validate the request
+        $rules=[
+
+            'users.*.name'=>'required',
+            'users.*.email'=>'required|email|unique:users',
+            'users.*.password'=>'required|min:6',
+
+        ];
+
+        $customMessage=[
+
+            'users.*.name.required'=>'Name is required',
+            'users.*.email.required'=>'Email is required',
+            'users.*.email.email'=>'Email is invalid',
+            'users.*.email.unique'=>'Email is already taken',
+            'users.*.password.required'=>'Password is required',
+            'users.*.password.min'=>'Password must be at least 6 characters',
+
+        ];
+
+        $validation=Validator::make($req->all(),$rules,$customMessage);
+
+        //here 422 means unprocessable entity
+        if($validation->fails())
+        {
+
+            return response()->json([
+
+                'message'=>$validation->errors(),
+
+            ],422);
+
+        }
+
+        foreach($data['users'] as $user)
+        {
+
+            User::create([
+
+                'name'=>$user['name'],
+                'email'=>$user['email'],
+                'password'=>Hash::make($user['password']),
+
+            ]);
+
+        }
+     
+
+        //201 request means data created successfully
+        return response()->json([
+
+            'message'=>'User Created Successfully',
+
+        ],201);
+
+
+    }
 
 }
