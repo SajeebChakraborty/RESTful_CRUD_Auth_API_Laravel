@@ -43,3 +43,24 @@ Route::delete('/delete-multiple-user/{ids}', UserApiController::class . '@delete
 
 //Authentication check
 Route::get('/product-list', ProductApiController::class . '@productList');
+
+/*
+    Laravel Passport Installation Steps
+
+    1. composer require laravel/passport
+    2. php artisan migrate
+    3. php artisan passport:install
+    4. In User model,
+       use Laravel\Passport\HasApiTokens;
+       use HasApiTokens,HasFactory,Notifiable
+    5. Update AuthServiceProvider
+       use Laravel\Passport\Passport;
+    6. In boot method,
+       Passport::routes();
+    7.Update config/auth.php
+      'api'=> [
+           'driver' => 'passport',
+           'provider' => 'users',
+      ],
+
+*/
