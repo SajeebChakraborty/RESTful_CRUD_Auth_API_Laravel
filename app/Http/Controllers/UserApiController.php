@@ -370,11 +370,80 @@ class UserApiController extends Controller
 
                 'message'=>'Opps! Something went wrong',
 
-            ],500);
+            ],422);
 
         }
 
 
+    }
+
+    public function loginUserWithPassport(Request $req)
+    {
+        //validate the request
+        $rules=[
+
+            'email'=>'required|email|exists:users',
+            'password'=>'required|min:6',
+
+        ];
+
+        $customMessage=[
+
+            'email.required'=>'Email is required',
+            'email.email'=>'Email is invalid',
+            'email.exists'=>'Email do not exists',
+            'password.required'=>'Password is required',
+            'password.min'=>'Password must be at least 6 characters',
+
+        ];
+
+        $validation=Validator::make($req->all(),$rules,$customMessage);
+
+        //here 422 means unprocessable entity
+        if($validation->fails())
+        {
+
+            return response()->json([
+
+                'message'=>$validation->errors(),
+
+            ],422);
+
+        }
+
+        if(Auth::attempt(['email'=>$req->email,'password'=>$req->password]))
+        {
+
+            $user=User::where('email',$req->email)->first();
+
+            $access_token=$user->createToken($req->email)->accessToken;
+
+            User::where('email',$req->email)->update([
+
+                'access_token'=>$access_token,
+
+            ]);
+
+            return response()->json([
+
+                'message'=>'User successfully login',
+                'access_token'=>$access_token,
+
+            ],201);
+
+
+        }
+        else
+        {
+
+            return response()->json([
+
+                'message'=>'Invalid email or password',
+
+            ],422);
+
+        }
+   
     }
 
 }
