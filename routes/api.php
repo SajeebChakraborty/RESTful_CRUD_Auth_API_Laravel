@@ -34,3 +34,6 @@ Route::put('/update-user/{id}', UserApiController::class . '@updateUser');
 
 //PATCH Request
 Route::patch('/update-user-single-record/{id}', UserApiController::class . '@updateUserSingleRecord');
+
+//DELETE Request
+Route::delete('/delete-user/{id}', UserApiController::class . '@deleteUser');

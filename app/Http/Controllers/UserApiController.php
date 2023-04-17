@@ -252,4 +252,17 @@ class UserApiController extends Controller
 
     }
 
+    public function deleteUser($id)
+    {
+
+        User::where('id',$id)->delete();
+
+        return response()->json([
+
+            'message'=>'User Deleted Successfully',
+
+        ],200);
+    
+    }
+
 }
