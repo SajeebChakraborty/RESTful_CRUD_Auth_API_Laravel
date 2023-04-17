@@ -31,3 +31,6 @@ Route::post('/add-multiple-user', UserApiController::class . '@createMultipleUse
 
 //PUT Request
 Route::put('/update-user/{id}', UserApiController::class . '@updateUser');
+
+//PATCH Request
+Route::patch('/update-user-single-record/{id}', UserApiController::class . '@updateUserSingleRecord');

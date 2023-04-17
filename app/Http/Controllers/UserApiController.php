@@ -157,7 +157,7 @@ class UserApiController extends Controller
 
 
     }
-    
+
     public function updateUser(Request $req,$id)
     {
 
@@ -204,6 +204,52 @@ class UserApiController extends Controller
             'message'=>'User Updated Successfully',
 
         ],202);
+    }
+
+    public function updateUserSingleRecord(Request $req,$id)
+    {
+
+          //validate the request
+          $rules=[
+
+            'name'=>'required',
+
+        ];
+
+        $customMessage=[
+
+            'name.required'=>'Name is required',
+
+        ];
+
+        $validation=Validator::make($req->all(),$rules,$customMessage);
+
+        //here 422 means unprocessable entity
+        if($validation->fails())
+        {
+
+            return response()->json([
+
+                'message'=>$validation->errors(),
+
+            ],422);
+
+        }
+
+        User::where('id',$id)->Update([
+
+            'name'=>$req->name,
+
+        ]);
+
+        //201 request means data created successfully
+        return response()->json([
+
+            'message'=>'User Updated Successfully',
+
+        ],202);
+
+
     }
 
 }
