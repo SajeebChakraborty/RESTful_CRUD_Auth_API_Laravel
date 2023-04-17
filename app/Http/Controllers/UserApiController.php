@@ -198,7 +198,7 @@ class UserApiController extends Controller
 
         ]);
 
-        //201 request means data created successfully
+        //202 request means data updated successfully
         return response()->json([
 
             'message'=>'User Updated Successfully',
@@ -242,7 +242,7 @@ class UserApiController extends Controller
 
         ]);
 
-        //201 request means data created successfully
+        //202 request means data updated successfully
         return response()->json([
 
             'message'=>'User Updated Successfully',
