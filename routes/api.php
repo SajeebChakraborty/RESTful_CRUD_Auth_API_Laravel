@@ -64,3 +64,6 @@ Route::get('/product-list', ProductApiController::class . '@productList');
       ],
 
 */
+
+//Laravel Passport
+Route::post('/register-user-with-passport', UserApiController::class . '@registerUserWithPassport');

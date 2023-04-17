@@ -11,6 +11,7 @@ use App\Models\Product;
 //import the Validator
 use Illuminate\Support\Facades\Validator;
 
+use Auth;
 use Hash;
 
 class UserApiController extends Controller
@@ -286,12 +287,93 @@ class UserApiController extends Controller
         $ids=explode(',',$ids);
 
         User::whereIn('id',$ids)->delete();
-        
+
         return response()->json([
 
             'message'=>'User Deleted Successfully',
 
         ],200);
+
+    }
+
+    public function registerUserWithPassport(Request $req)
+    {
+
+        //validate the request
+        $rules=[
+
+            'name'=>'required',
+            'email'=>'required|email|unique:users',
+            'password'=>'required|min:6',
+
+        ];
+
+        $customMessage=[
+
+            'name.required'=>'Name is required',
+            'email.required'=>'Email is required',
+            'email.email'=>'Email is invalid',
+            'email.unique'=>'Email is already taken',
+            'password.required'=>'Password is required',
+            'password.min'=>'Password must be at least 6 characters',
+
+        ];
+
+        $validation=Validator::make($req->all(),$rules,$customMessage);
+
+        //here 422 means unprocessable entity
+        if($validation->fails())
+        {
+
+            return response()->json([
+
+                'message'=>$validation->errors(),
+
+            ],422);
+
+        }
+
+        User::create([
+
+            'name'=>$req->name,
+            'email'=>$req->email,
+            'password'=>Hash::make($req->password),
+
+        ]);
+
+        if(Auth::attempt(['email'=>$req->email,'password'=>$req->password]))
+        {
+
+            $user=User::where('email',$req->email)->first();
+
+            $access_token=$user->createToken($req->email)->accessToken;
+
+            User::where('email',$req->email)->update([
+
+                'access_token'=>$access_token,
+
+            ]);
+
+            return response()->json([
+
+                'message'=>'User registered Successfully',
+                'access_token'=>$access_token,
+
+            ],201);
+
+
+        }
+        else
+        {
+
+            return response()->json([
+
+                'message'=>'Opps! Something went wrong',
+
+            ],500);
+
+        }
+
 
     }
 
