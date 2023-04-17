@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Product;
 
+//import the Validator
+use Illuminate\Support\Facades\Validator;
+
+use Hash;
+
 class UserApiController extends Controller
 {
 
@@ -33,6 +38,61 @@ class UserApiController extends Controller
            'name'=>$userDetails->name,
 
         ]);
+
+    }
+
+    //create single user
+    public function createUser(Request $req)
+    {
+
+        //validate the request
+        $rules=[
+
+            'name'=>'required',
+            'email'=>'required|email|unique:users',
+            'password'=>'required|min:6',
+
+        ];
+
+        $customMessage=[
+
+            'name.required'=>'Name is required',
+            'email.required'=>'Email is required',
+            'email.email'=>'Email is invalid',
+            'email.unique'=>'Email is already taken',
+            'password.required'=>'Password is required',
+            'password.min'=>'Password must be at least 6 characters',
+
+        ];
+
+        $validation=Validator::make($req->all(),$rules,$customMessage);
+
+        //here 422 means unprocessable entity
+        if($validation->fails())
+        {
+
+            return response()->json([
+
+                'message'=>$validation->errors(),
+
+            ],422);
+
+        }
+
+        User::create([
+
+            'name'=>$req->name,
+            'email'=>$req->email,
+            'password'=>Hash::make($req->password),
+
+        ]);
+
+        //201 request means data created successfully
+        return response()->json([
+
+            'message'=>'User Created Successfully',
+
+        ],201);
 
     }
 

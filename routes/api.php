@@ -21,5 +21,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//GET Request
 Route::get('/users', UserApiController::class . '@allUser');
 Route::get('/users/{id}', UserApiController::class . '@userDetails');
+
+//POST Request
+Route::post('/add-user', UserApiController::class . '@createUser');
