@@ -157,5 +157,53 @@ class UserApiController extends Controller
 
 
     }
+    
+    public function updateUser(Request $req,$id)
+    {
+
+        //validate the request
+        $rules=[
+
+            'name'=>'required',
+            'password'=>'required|min:6',
+
+        ];
+
+        $customMessage=[
+
+            'name.required'=>'Name is required',
+            'password.required'=>'Password is required',
+            'password.min'=>'Password must be at least 6 characters',
+
+        ];
+
+        $validation=Validator::make($req->all(),$rules,$customMessage);
+
+        //here 422 means unprocessable entity
+        if($validation->fails())
+        {
+
+            return response()->json([
+
+                'message'=>$validation->errors(),
+
+            ],422);
+
+        }
+
+        User::where('id',$id)->Update([
+
+            'name'=>$req->name,
+            'password'=>Hash::make($req->password),
+
+        ]);
+
+        //201 request means data created successfully
+        return response()->json([
+
+            'message'=>'User Updated Successfully',
+
+        ],202);
+    }
 
 }

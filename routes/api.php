@@ -28,3 +28,6 @@ Route::get('/users/{id}', UserApiController::class . '@userDetails');
 //POST Request
 Route::post('/add-user', UserApiController::class . '@createUser');
 Route::post('/add-multiple-user', UserApiController::class . '@createMultipleUser');
+
+//PUT Request
+Route::put('/update-user/{id}', UserApiController::class . '@updateUser');
